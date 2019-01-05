@@ -1,7 +1,10 @@
 package br.com.swchallenge.api.DTO;
 
-public class BaseDTO {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class BaseDTO {	 
 	private int id;
+	@JsonProperty("nome")
 	private String name;
 	
 	public int getId() {

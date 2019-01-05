@@ -1,29 +1,27 @@
 package br.com.swchallenge.api.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.stereotype.Component;
 import br.com.swchallenge.api.DTO.ClimateDTO;
 import br.com.swchallenge.api.DTO.PlanetDTO;
 import br.com.swchallenge.api.DTO.TerrainDTO;
-import br.com.swchallenge.api.model.Climate;
+import br.com.swchallenge.api.model.BaseEntity;
 import br.com.swchallenge.api.model.Planet;
-import br.com.swchallenge.api.model.Terrain;
 import br.com.swchallenge.api.repository.PlanetRepositoty;
 
+@Component
 public class PlanetService extends BaseService {
 	
 	@Autowired
 	private PlanetRepositoty planetRepositoty;
-	
-	
-	public void SavePlanet(PlanetDTO planetDTO) {
-
-	}
-
-	public void savePlanet(PlanetDTO planetDTO) {
+		
+	public PlanetDTO savePlanet(PlanetDTO planetDTO) {
 		Planet planet = extractEntityFromDTO(planetDTO);
 		
-		planetRepositoty.save(planet);		
+		planetRepositoty.save(planet);	
+		planetDTO.setId(planet.getId());
+		
+		return planetDTO;
 	}
 	
 	
@@ -37,14 +35,22 @@ public class PlanetService extends BaseService {
 		planet.setName(planetDTO.getName());
 
 		for (ClimateDTO dto : planetDTO.getClimates()) {
-			planet.addClimate((Climate) climateService.extractEntityFromDTO(dto));
+			BaseEntity climate = new BaseEntity();			
+			 climate =  climateService.extractEntityFromDTO(dto);			 
+			 //TODO: TENTAR MELHORAR ESSE CAST DE BASEENTITY PARA CLIMATE			 
+			planet.addClimate(climate.getId(), climate.getName());
 		}
 
 		for (TerrainDTO dto : planetDTO.getTerrains()) {
-			planet.addTerrain((Terrain) terrainService.extractEntityFromDTO(dto));
+			BaseEntity terrain = new BaseEntity();			
+			terrain =  terrainService.extractEntityFromDTO(dto);	
+			//TODO: TENTAR MELHORAR ESSE CAST DE BASEENTITY PARA TERRAIN	
+			planet.addTerrain(terrain.getId(), terrain.getName());
 		}
-
-		return new Planet();
+		
+		planetRepositoty.save(planet);
+		
+		return planet;
 	}
 	
 	

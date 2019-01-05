@@ -1,6 +1,9 @@
 package br.com.swchallenge.api.model;
 
+import org.springframework.data.annotation.Id;
+
 public class BaseEntity {
+	@Id
 	private int id;
 	private String name;
 	

@@ -2,10 +2,16 @@ package br.com.swchallenge.api.DTO;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+
 public class PlanetDTO  extends BaseDTO{
 	
-	private int amountOfTimesHasAppearedInMovies;	
+	@JsonProperty("aparicoesEmFilmes") // TODO REMOVER ESSA ANOTAÇÃO PORQUE ESSE CAMPO VIRÁ DE PROCESSAMENTO
+	private int amountOfTimesHasAppearedInMovies;
+	@JsonProperty("climas")
 	private List<ClimateDTO> climates;
+	@JsonProperty("terrenos")
 	private List<TerrainDTO> terrains;
 
 	public int getAmountOfTimesHasAppearedInMovies() {

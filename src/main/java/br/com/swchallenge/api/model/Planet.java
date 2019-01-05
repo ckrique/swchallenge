@@ -3,8 +3,16 @@ package br.com.swchallenge.api.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Planet extends BaseEntity{
+import org.springframework.data.mongodb.core.mapping.Document;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+
+@Document(collection="Planet")
+@Data
+@AllArgsConstructor
+public class Planet extends BaseEntity{
 	private int amountOfTimesHasAppearedInMovies;	
 	private List<Climate> climates;
 	private List<Terrain> terrains;
@@ -30,7 +38,11 @@ public class Planet extends BaseEntity{
 		this.climates = climates;
 	}
 	
-	public void addClimate(Climate climate) {
+	public void addClimate(int id, String name) {
+		Climate climate = new Climate();
+		climate.setId(id);
+		climate.setName(name);
+		
 		this.climates.add(climate);
 	}
 
@@ -42,7 +54,11 @@ public class Planet extends BaseEntity{
 		this.terrains = terrains;
 	}
 	
-	public void addTerrain(Terrain terrain) {
+	public void addTerrain(int id, String name) {
+		Terrain terrain = new Terrain();
+		
+		terrain.setId(id);
+		terrain.setName(name);
 		this.terrains.add(terrain);
 	}
 }
