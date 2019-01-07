@@ -3,7 +3,7 @@ package br.com.swchallenge.api.DTO;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PlanetsRequisitionList {
+public class PlanetsRequisitionListDTO {
 	
 	private int count;
 	@JsonProperty("next")
