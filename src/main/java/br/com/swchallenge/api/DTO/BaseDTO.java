@@ -2,23 +2,36 @@ package br.com.swchallenge.api.DTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class BaseDTO {	 
+public class BaseDTO {
 	private int id;
-	@JsonProperty("nome")
+	
 	private String name;
+
+	public BaseDTO() {
+		
+	}
+	
+	public BaseDTO(String name) {
+		super();
+		this.name = name;
+	}
 	
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -26,6 +39,7 @@ public class BaseDTO {
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -41,7 +55,6 @@ public class BaseDTO {
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
-	}	
-	
-	
+	}
+
 }

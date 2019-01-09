@@ -3,13 +3,11 @@ package br.com.swchallenge.api.DTO;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PlanetsRequisitionListDTO {
+public class PlanetsRequisitionListDTO extends BaseDTO{
 	
 	private int count;
 	@JsonProperty("next")
 	private String nextPlanetListURL;
-	@JsonProperty("previous")
-	private String previousPlanetListURL;
 	private List<PlanetDTO> results;
 	
 	public int getCount() {
@@ -29,17 +27,6 @@ public class PlanetsRequisitionListDTO {
 	public void setNextPlanetListURL(String nextPlanetListURL) {
 		this.nextPlanetListURL = nextPlanetListURL;
 	}
-
-
-	public String getPreviousPlanetListURL() {
-		return previousPlanetListURL;
-	}
-
-
-	public void setPreviousPlanetListURL(String previousPlanetListURL) {
-		this.previousPlanetListURL = previousPlanetListURL;
-	}
-
 
 	public List<PlanetDTO> getResults() {
 		return results;

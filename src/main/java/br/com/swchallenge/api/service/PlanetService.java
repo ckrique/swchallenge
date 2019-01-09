@@ -32,9 +32,9 @@ public class PlanetService extends BaseService {
 			planetRepositoty.save(planet);
 			// planetDTO.setId(planet.getId());
 
-			if (planetDTO.getId() <= 0)
-				throw new Exception("Error trying save Planet. The Planet could not be saved.");
-		}
+			//if (planetDTO.getId() <= 0)
+				//throw new Exception("Error trying save Planet. The Planet could not be saved.");
+		}		
 		catch (ValidationException vEx) {
 			throw vEx;
 		} 
@@ -44,7 +44,7 @@ public class PlanetService extends BaseService {
 		return planetDTO;
 	}
 
-	public Planet extractEntityFromDTO(PlanetDTO planetDTO) {
+	public Planet extractEntityFromDTO(PlanetDTO planetDTO) {//COLOCAR VALIDAÇÕES CONTRA NULL POINTER
 		Planet planet = new Planet();
 		ClimateService climateService = new ClimateService();
 		TerrainService terrainService = new TerrainService();
@@ -53,21 +53,19 @@ public class PlanetService extends BaseService {
 		planet.setAmountOfTimesHasAppearedInMovies(planetDTO.getAmountOfTimesHasAppearedInMovies());
 		planet.setName(planetDTO.getName());
 
-		for (ClimateDTO dto : planetDTO.getClimates()) {
+		for (ClimateDTO dto : planetDTO.getClimatesList()) {
 			BaseEntity climate = new BaseEntity();
 			climate = climateService.extractEntityFromDTO(dto);
 			// TODO: TENTAR MELHORAR ESSE CAST DE BASEENTITY PARA CLIMATE
 			planet.addClimate(climate.getId(), climate.getName());
 		}
 
-		for (TerrainDTO dto : planetDTO.getTerrains()) {
+		for (TerrainDTO dto : planetDTO.getTerrainsList()) {
 			BaseEntity terrain = new BaseEntity();
 			terrain = terrainService.extractEntityFromDTO(dto);
 			// TODO: TENTAR MELHORAR ESSE CAST DE BASEENTITY PARA TERRAIN
 			planet.addTerrain(terrain.getId(), terrain.getName());
 		}
-
-		planetRepositoty.save(planet);
 
 		return planet;
 	}

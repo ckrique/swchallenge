@@ -1,19 +1,21 @@
 package br.com.swchallenge.api.DTO;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+public class PlanetDTO extends BaseDTO {
 
-public class PlanetDTO  extends BaseDTO{
 	
-	@JsonProperty("aparicoesEmFilmes") // TODO REMOVER ESSA ANOTAÇÃO PORQUE ESSE CAMPO VIRÁ DE PROCESSAMENTO
 	private int amountOfTimesHasAppearedInMovies;
-	@JsonProperty("climas")
-	private List<ClimateDTO> climates;
-	@JsonProperty("terrenos")
-	private List<TerrainDTO> terrains;
+	private String climate;
+	private String terrain;
+	private List<ClimateDTO> climatesList;
+	private List<TerrainDTO> terrainsList;
 
+	
 	public int getAmountOfTimesHasAppearedInMovies() {
 		return amountOfTimesHasAppearedInMovies;
 	}
@@ -22,20 +24,64 @@ public class PlanetDTO  extends BaseDTO{
 		this.amountOfTimesHasAppearedInMovies = amountOfTimesHasAppearedInMovies;
 	}
 
-	public List<ClimateDTO> getClimates() {
-		return climates;
+	public String getClimate() {
+		return climate;
 	}
 
-	public void setClimates(List<ClimateDTO> climates) {
-		this.climates = climates;
+	public void setClimate(String climate) {
+		List<String> climateNames = new ArrayList<String>();
+		this.climate = climate;		
+		climatesList = new ArrayList<ClimateDTO>();		
+								
+		if(!climate.trim().equals(""))
+			climateNames = Arrays.asList(climate.split(","));
+		
+		for(String climateName : climateNames) {
+			if(climateName.startsWith(" "))
+				climateName = climateName.replaceAll("^\\s+","");
+			
+			climatesList.add(new ClimateDTO(climateName));
+		}
+		
+		setClimatesList(climatesList);
 	}
 
-	public List<TerrainDTO> getTerrains() {
-		return terrains;
+	public List<ClimateDTO> getClimatesList() {
+		return climatesList;
 	}
 
-	public void setTerrains(List<TerrainDTO> terrains) {
-		this.terrains = terrains;
+	public void setClimatesList(List<ClimateDTO> climates) {
+		this.climatesList = climates;
+	}
+
+	public String getTerrain() {
+		return terrain;
+	}
+
+	public void setTerrain(String terrain) {
+		List<String> terrainNames = new ArrayList<String>();
+		this.terrain = terrain;		
+		terrainsList = new ArrayList<TerrainDTO>();	
+		
+		if(!terrain.trim().equals(""))
+			terrainNames = Arrays.asList(terrain.split(","));
+		
+		for(String terrainName : terrainNames) {
+			if(terrainName.startsWith(" "))
+				terrainName = terrainName.replaceAll("^\\s+","");
+			
+			terrainsList.add(new TerrainDTO(terrainName));
+		}
+		
+		setTerrainsList(terrainsList);		
+	}
+
+	public List<TerrainDTO> getTerrainsList() {
+		return terrainsList;
+	}
+
+	public void setTerrainsList(List<TerrainDTO> terrains) {
+		this.terrainsList = terrains;
 	}
 
 }
