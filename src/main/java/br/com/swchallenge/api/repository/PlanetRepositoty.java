@@ -5,5 +5,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import br.com.swchallenge.api.model.Planet;
 
 public interface PlanetRepositoty extends MongoRepository<Planet, Integer>{
-
+	public Planet findByName(String name);
 }

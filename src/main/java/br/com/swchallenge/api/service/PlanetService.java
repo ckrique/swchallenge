@@ -1,11 +1,13 @@
 package br.com.swchallenge.api.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.ValidationException;
 
 import org.omg.CORBA.portable.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Component;
 import br.com.swchallenge.api.DTO.ClimateDTO;
 import br.com.swchallenge.api.DTO.PlanetDTO;
@@ -23,7 +25,29 @@ public class PlanetService extends BaseService {
 
 	@Autowired
 	private SWAPIClient swApiClient;
-
+	
+	public List<Planet> findPlanets() throws ValidationException{
+		List<Planet> planets = new ArrayList<Planet>();
+		
+		planets  = planetRepositoty.findAll();
+			
+		if(planets.size() <=0 )
+			throw new ValidationException("There is no Planets on database.");
+		
+		return planets;
+	}
+	
+	public Planet findPlanetsByName(String name) throws ValidationException{
+		Planet planet = null;
+		
+		planet  = planetRepositoty.findByName(name);
+			
+		if(planet == null )
+			throw new ValidationException("Planet was not found.");
+		
+		return planet;
+	}
+	
 	public PlanetDTO savePlanet(PlanetDTO planetDTO) throws ValidationException, Exception {
 		try {
 			validatePlanet(planetDTO);
@@ -39,7 +63,7 @@ public class PlanetService extends BaseService {
 			throw vEx;
 		} 
 		catch (Exception ex) {
-			throw ex;
+			throw new Exception("Error while trying of add Planet.");
 		}
 		return planetDTO;
 	}
