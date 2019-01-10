@@ -2,6 +2,7 @@ package br.com.swchallenge.api.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.ValidationException;
 
@@ -37,11 +38,34 @@ public class PlanetService extends BaseService {
 		return planets;
 	}
 	
+	public void removePlanet(String name)  throws ValidationException{{
+		Planet planet = null;
+		
+		planet = findPlanetsByName(name);
+		
+		if(planet != null)
+			planetRepositoty.delete(planet);
+		else
+			throw new ValidationException("Planet was not found.");
+		}		
+	}
+	
 	public Planet findPlanetsByName(String name) throws ValidationException{
 		Planet planet = null;
 		
 		planet  = planetRepositoty.findByName(name);
 			
+		if(planet == null )
+			throw new ValidationException("Planet was not found.");
+		
+		return planet;
+	}
+	
+	public Optional<Planet> findPlanetsById(int id) throws ValidationException{
+		Optional<Planet> planet = null;
+		
+		planet  = planetRepositoty.findById(id);
+							
 		if(planet == null )
 			throw new ValidationException("Planet was not found.");
 		
