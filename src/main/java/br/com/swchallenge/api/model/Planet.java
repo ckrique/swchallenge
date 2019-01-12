@@ -13,7 +13,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Planet extends BaseEntity{
-	private int amountOfTimesHasAppearedInMovies;	
+	private int movieAppearances;	
 	private List<Climate> climates;
 	private List<Terrain> terrains;
 	
@@ -22,12 +22,12 @@ public class Planet extends BaseEntity{
 		terrains = new ArrayList<Terrain>();
 	}
 	
-	public int getAmountOfTimesHasAppearedInMovies() {
-		return amountOfTimesHasAppearedInMovies;
+	public int getMovieAppearances() {
+		return movieAppearances;
 	}
 
-	public void setAmountOfTimesHasAppearedInMovies(int amountOfTimesHasAppearedInMovies) {
-		this.amountOfTimesHasAppearedInMovies = amountOfTimesHasAppearedInMovies;
+	public void setMovieAppearances(int movieAppearances) {
+		this.movieAppearances = movieAppearances;
 	}
 
 	public List<Climate> getClimates() {

@@ -3,26 +3,17 @@ package br.com.swchallenge.api.DTO;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PlanetDTO extends BaseDTO {
-
 	
-	private int amountOfTimesHasAppearedInMovies;
+	private int movieAppearances;
 	private String climate;
 	private String terrain;
 	private List<ClimateDTO> climatesList;
+	 @JsonProperty("films")
+	private List<String> filmsUrls;
 	private List<TerrainDTO> terrainsList;
-
-	
-	public int getAmountOfTimesHasAppearedInMovies() {
-		return amountOfTimesHasAppearedInMovies;
-	}
-
-	public void setAmountOfTimesHasAppearedInMovies(int amountOfTimesHasAppearedInMovies) {
-		this.amountOfTimesHasAppearedInMovies = amountOfTimesHasAppearedInMovies;
-	}
 
 	public String getClimate() {
 		return climate;
@@ -54,6 +45,27 @@ public class PlanetDTO extends BaseDTO {
 		this.climatesList = climates;
 	}
 
+	public List<String> getFilmsUrls() {
+		return filmsUrls;
+	}
+
+	public void setFilmsUrls(List<String> filmsUrls) {
+		this.filmsUrls = filmsUrls;		
+		
+		for(String film : filmsUrls) {
+			if(film != null && !film.equals(""))
+				setMovieAppearances(getMovieAppearances() + 1);
+		}
+	}
+	
+	public int getMovieAppearances() {
+		return movieAppearances;
+	}
+
+	public void setMovieAppearances(int movieAppearances) {
+		this.movieAppearances = movieAppearances;
+	}
+	
 	public String getTerrain() {
 		return terrain;
 	}

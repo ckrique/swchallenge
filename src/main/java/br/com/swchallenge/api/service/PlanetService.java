@@ -1,6 +1,8 @@
 package br.com.swchallenge.api.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,12 +22,14 @@ import br.com.swchallenge.api.repository.PlanetRepositoty;
 
 @Component
 public class PlanetService extends BaseService {
-
+	
 	@Autowired
 	private PlanetRepositoty planetRepositoty;
 
 	@Autowired
 	private SWAPIClient swApiClient;
+	
+	private static List<PlanetDTO> SWAPIPlanets;
 	
 	public List<Planet> findPlanets() throws ValidationException{
 		List<Planet> planets = new ArrayList<Planet>();
@@ -48,7 +52,7 @@ public class PlanetService extends BaseService {
 		else
 			throw new ValidationException("Planet was not found.");
 		}		
-	}
+   	}
 	
 	public Planet findPlanetsByName(String name) throws ValidationException{
 		Planet planet = null;
@@ -74,8 +78,12 @@ public class PlanetService extends BaseService {
 	
 	public PlanetDTO savePlanet(PlanetDTO planetDTO) throws ValidationException, Exception {
 		try {
+			callSWAPIToGetPlanets();
+			
+			planetDTO.setMovieAppearances(getMovieAppearances(planetDTO));
+			
 			validatePlanet(planetDTO);
-
+			
 			Planet planet = extractEntityFromDTO(planetDTO);
 			planetRepositoty.save(planet);
 			// planetDTO.setId(planet.getId());
@@ -98,7 +106,7 @@ public class PlanetService extends BaseService {
 		TerrainService terrainService = new TerrainService();
 
 		planet.setId(planetDTO.getId());
-		planet.setAmountOfTimesHasAppearedInMovies(planetDTO.getAmountOfTimesHasAppearedInMovies());
+		planet.setMovieAppearances(planetDTO.getMovieAppearances());
 		planet.setName(planetDTO.getName());
 
 		for (ClimateDTO dto : planetDTO.getClimatesList()) {
@@ -117,10 +125,26 @@ public class PlanetService extends BaseService {
 
 		return planet;
 	}
+	
+	private void callSWAPIToGetPlanets() throws Exception {
+		SWAPIPlanets = swApiClient.getSWAPIPlanets();
+	}
 
+	private int getMovieAppearances(PlanetDTO planet) {		
+		HashMap<String, PlanetDTO> planetMap = new HashMap<String, PlanetDTO>();
+		
+		if(SWAPIPlanets != null)
+			for(PlanetDTO SWAPIPlanet : SWAPIPlanets)
+				planetMap.put(SWAPIPlanet.getName(), SWAPIPlanet);
+		
+		PlanetDTO pdto =  planetMap.get(planet.getName());
+		int count = pdto.getMovieAppearances();
+		return count;
+	}
+	
 	private void validatePlanet(PlanetDTO planet) throws ValidationException, Exception {
-		List<PlanetDTO> SWAPIPlanets = swApiClient.getSWAPIPlanets();
-
+		//List<PlanetDTO> SWAPIPlanets = swApiClient.getSWAPIPlanets();
+		
 		if (planet.getId() > 0)
 			throw new ValidationException("Ilavid data. Planet could not be saved.");
 
