@@ -1,4 +1,4 @@
-package br.com.swchallenge.api.cliente;
+package br.com.swchallenge.api.client;
 
 import java.util.ArrayList;
 import java.util.List;

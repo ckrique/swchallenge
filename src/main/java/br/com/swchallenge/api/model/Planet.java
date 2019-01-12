@@ -3,6 +3,7 @@ package br.com.swchallenge.api.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
@@ -13,6 +14,10 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Planet extends BaseEntity{
+	
+	@Transient
+    public static final String SEQUENCE_NAME = "planets_sequence";
+	
 	private int movieAppearances;	
 	private List<Climate> climates;
 	private List<Terrain> terrains;
