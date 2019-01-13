@@ -74,7 +74,7 @@ public class PlanetController {
 	@PostMapping("/swchallenge/addPlanet")
 	public String savePlanet(@RequestBody PlanetDTO planet) {
 		try {
-			planetService.savePlanet(planet);
+			planetService.savePlanetByDTO(planet);
 		} catch (SwChallengeException swCEx) {
 			throw swCEx;
 		} catch (Exception ex) {

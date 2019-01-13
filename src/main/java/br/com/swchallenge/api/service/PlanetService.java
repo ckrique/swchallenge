@@ -78,7 +78,7 @@ public class PlanetService extends BaseService {
 		return planet;
 	}
 
-	public PlanetDTO savePlanet(PlanetDTO planetDTO)
+	public PlanetDTO savePlanetByDTO(PlanetDTO planetDTO)
 			throws NotIsASWPlanetException, AlreadyRecordedDataException, BadRequestException {
 		try {
 			callSWAPIToGetPlanets();
@@ -89,6 +89,7 @@ public class PlanetService extends BaseService {
 
 			Planet planet = extractEntityFromDTO(planetDTO);
 			planetRepositoty.save(planet);
+			planetDTO.setId(planet.getId());
 
 		} catch (SwChallengeException swCEx) {
 			throw swCEx;
@@ -97,7 +98,7 @@ public class PlanetService extends BaseService {
 		}
 		return planetDTO;
 	}
-
+	
 	public Planet extractEntityFromDTO(PlanetDTO planetDTO) {// COLOCAR VALIDAÇÕES CONTRA NULL POINTER
 		Planet planet = new Planet();
 		ClimateService climateService = new ClimateService();
