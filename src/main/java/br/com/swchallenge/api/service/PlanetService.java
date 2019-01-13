@@ -40,18 +40,8 @@ public class PlanetService extends BaseService {
 		return planets;
 	}
 
-	public void removePlanet(String name) throws PlanetNotFoudException {
 
-		Planet planet = null;
-
-		planet = findPlanetsByName(name);
-
-		if (planet != null)
-			planetRepositoty.delete(planet);
-		else
-			throw new PlanetNotFoudException();
-
-	}
+	
 
 	public Planet findPlanetsByName(String name) throws PlanetNotFoudException {
 		Planet planet = null;
@@ -75,6 +65,19 @@ public class PlanetService extends BaseService {
 		return encapsulatedPlanet.get();
 	}
 
+	public void removePlanet(String name) throws PlanetNotFoudException {
+
+		Planet planet = null;
+
+		planet = findPlanetsByName(name);
+
+		if (planet != null)
+			planetRepositoty.delete(planet);
+		else
+			throw new PlanetNotFoudException();
+
+	}
+	
 	public PlanetDTO savePlanetByDTO(PlanetDTO planetDTO)
 			throws NotIsASWPlanetException, AlreadyRecordedDataException, BadRequestException {
 		try {

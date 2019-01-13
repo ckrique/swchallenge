@@ -17,6 +17,13 @@ public class PlanetDTO extends BaseDTO {
 	@JsonProperty("terreno")
 	private List<String> terrainsList;
 
+	
+	public PlanetDTO() {
+		climatesList = new ArrayList<String>();
+		terrainsList = new ArrayList<String>();		
+	}
+	
+	
 	public String getClimate() {
 		return climate;
 	}
@@ -92,12 +99,12 @@ public class PlanetDTO extends BaseDTO {
 			if (terraineName.startsWith(" "))
 				terraineName = terraineName.replaceAll("^\\s+", "");
 
-			addClimateToList(terraineName);
+			addTerrainToList(terraineName);
 		}
 	}
 
 	public void addTerrainToList(String terrainName) {
-		climatesList.add(terrainName);
+		terrainsList.add(terrainName);
 	}
 
 	public List<String> getTerrainsList() {
