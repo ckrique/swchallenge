@@ -83,9 +83,9 @@ public class PlanetService extends BaseService {
 		try {
 			callSWAPIToGetPlanets();
 
-			planetDTO.setMovieAppearances(getMovieAppearances(planetDTO));
-
 			validatePlanet(planetDTO);
+			
+			planetDTO.setMovieAppearances(getMovieAppearances(planetDTO));			
 
 			Planet planet = extractEntityFromDTO(planetDTO);
 			planetRepositoty.save(planet);
