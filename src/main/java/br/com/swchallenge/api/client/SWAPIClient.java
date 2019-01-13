@@ -16,7 +16,7 @@ import br.com.swchallenge.api.DTO.PlanetsRequisitionListDTO;
 
 @Component
 public class SWAPIClient {
-	private static final String FIRST_PLANETS_PAGE_SWAPI = "https://swapi.co/api/planets";
+	private static final String FIRST_PLANETS_PAGE_SWAPI_URL = "https://swapi.co/api/planets";
 
 	/**
 	 * @return
@@ -31,30 +31,6 @@ public class SWAPIClient {
 	 * @throws Exception
 	 */
 	public List<PlanetDTO> getSWAPIPlanets() throws Exception {
-
-		/*CloseableHttpClient httpClient = HttpClients.custom().setSSLHostnameVerifier(new NoopHostnameVerifier())
-				.build();
-		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-		requestFactory.setHttpClient(httpClient);
-		RestTemplate restTemplate = new RestTemplate(requestFactory);
-		ResponseEntity<PlanetsRequisitionListDTO> responseEntity = restTemplate
-				.getForEntity("https://swapi.co/api/planets", PlanetsRequisitionListDTO.class);
-
-		if (responseEntity.getStatusCode().equals(org.springframework.http.HttpStatus.OK)) {
-			PlanetsRequisitionListDTO planetsRequisitionList = responseEntity.getBody();
-
-			String planetsNames = "";
-
-			for (PlanetDTO planet : planetsRequisitionList.getResults()) {
-				planetsNames = planetsNames + "\n" + planet.getName();
-			}
-
-			String teste = planetsNames;
-			return new ArrayList<PlanetDTO>();
-		}
-		else throw new Exception();
-		*/	
-		
 		
 		List<PlanetDTO> receivedPlanets = new ArrayList<PlanetDTO>();
 		String nextPlanetUrl = "";
@@ -65,7 +41,7 @@ public class SWAPIClient {
 		requestFactory.setHttpClient(httpClient);
 		RestTemplate restTemplate = new RestTemplate(requestFactory);
 		ResponseEntity<PlanetsRequisitionListDTO> responseEntity;
-		nextPlanetUrl = FIRST_PLANETS_PAGE_SWAPI;
+		nextPlanetUrl = FIRST_PLANETS_PAGE_SWAPI_URL;
 		
 		do {
 			responseEntity = restTemplate.getForEntity(nextPlanetUrl, PlanetsRequisitionListDTO.class);

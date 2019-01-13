@@ -2,9 +2,12 @@ package br.com.swchallenge.api.model;
 
 import org.springframework.data.annotation.Id;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class BaseEntity {
 	@Id
 	private int id;
+	@JsonProperty("nome")
 	private String name;
 	
 	public int getId() {

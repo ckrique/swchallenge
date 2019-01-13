@@ -37,7 +37,7 @@ public class PlanetController {
 	}
 
 	@GetMapping("/swchallenge/findByPlanetById/{id}")
-	public Optional<Planet> findByPlanetById(@PathVariable int id) {
+	public Planet findByPlanetById(@PathVariable int id) {
 
 		try {
 			return planetService.findPlanetsById(id);
@@ -49,7 +49,7 @@ public class PlanetController {
 	}
 
 	@GetMapping("/swchallenge/PlanetList")
-	public List<Planet> listPlanets() {// TODO: USAR OU NÃO DTO:?????????
+	public List<Planet> listPlanets() {
 		try {
 			return planetService.findPlanets();
 		} catch (SwChallengeException swCex) {

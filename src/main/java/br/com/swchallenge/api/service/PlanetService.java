@@ -7,9 +7,7 @@ import java.util.Optional;
 import javax.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import br.com.swchallenge.api.DTO.ClimateDTO;
 import br.com.swchallenge.api.DTO.PlanetDTO;
-import br.com.swchallenge.api.DTO.TerrainDTO;
 import br.com.swchallenge.api.client.SWAPIClient;
 import br.com.swchallenge.api.exceptions.AlreadyRecordedDataException;
 import br.com.swchallenge.api.exceptions.BadRequestException;
@@ -17,7 +15,6 @@ import br.com.swchallenge.api.exceptions.NotIsASWPlanetException;
 import br.com.swchallenge.api.exceptions.PlanetNotFoudException;
 import br.com.swchallenge.api.exceptions.PlanetsNotFoudException;
 import br.com.swchallenge.api.exceptions.SwChallengeException;
-import br.com.swchallenge.api.model.BaseEntity;
 import br.com.swchallenge.api.model.Planet;
 import br.com.swchallenge.api.repository.PlanetRepositoty;
 
@@ -67,15 +64,15 @@ public class PlanetService extends BaseService {
 		return planet;
 	}
 
-	public Optional<Planet> findPlanetsById(int id) throws PlanetsNotFoudException {
-		Optional<Planet> planet = null;
+	public Planet findPlanetsById(int id) throws PlanetsNotFoudException {
+		Optional<Planet> encapsulatedPlanet = null;
 
-		planet = planetRepositoty.findById(id);
+		encapsulatedPlanet = planetRepositoty.findById(id);
 
-		if (!planet.isPresent())
+		if (!encapsulatedPlanet.isPresent())
 			throw new PlanetNotFoudException();
 
-		return planet;
+		return encapsulatedPlanet.get();
 	}
 
 	public PlanetDTO savePlanetByDTO(PlanetDTO planetDTO)
@@ -101,26 +98,16 @@ public class PlanetService extends BaseService {
 	
 	public Planet extractEntityFromDTO(PlanetDTO planetDTO) {// COLOCAR VALIDAÇÕES CONTRA NULL POINTER
 		Planet planet = new Planet();
-		ClimateService climateService = new ClimateService();
-		TerrainService terrainService = new TerrainService();
-
+		
 		planet.setId(planetDTO.getId());
 		planet.setMovieAppearances(planetDTO.getMovieAppearances());
 		planet.setName(planetDTO.getName());
 
-		for (ClimateDTO dto : planetDTO.getClimatesList()) {
-			BaseEntity climate = new BaseEntity();
-			climate = climateService.extractEntityFromDTO(dto);
-			// TODO: TENTAR MELHORAR ESSE CAST DE BASEENTITY PARA CLIMATE
-			planet.addClimate(climate.getId(), climate.getName());
-		}
+		for (String oneClimate : planetDTO.getClimatesList())		
+			planet.addClimate(oneClimate);		
 
-		for (TerrainDTO dto : planetDTO.getTerrainsList()) {
-			BaseEntity terrain = new BaseEntity();
-			terrain = terrainService.extractEntityFromDTO(dto);
-			// TODO: TENTAR MELHORAR ESSE CAST DE BASEENTITY PARA TERRAIN
-			planet.addTerrain(terrain.getId(), terrain.getName());
-		}
+		for (String oneTerrain : planetDTO.getTerrainsList())		
+			planet.addTerrain(oneTerrain);
 
 		return planet;
 	}

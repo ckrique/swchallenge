@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -18,13 +20,16 @@ public class Planet extends BaseEntity{
 	@Transient
     public static final String SEQUENCE_NAME = "planets_sequence";
 	
+	@JsonProperty("numeroAparicoesEmFilmes")
 	private int movieAppearances;	
-	private List<Climate> climates;
-	private List<Terrain> terrains;
+	@JsonProperty("clima")
+	private List<String> climate;
+	@JsonProperty("terreno")
+	private List<String> terrain;
 	
 	public Planet() {
-		climates = new ArrayList<Climate>();
-		terrains = new ArrayList<Terrain>();
+		climate = new ArrayList<String>();
+		terrain = new ArrayList<String>();
 	}
 	
 	public int getMovieAppearances() {
@@ -35,35 +40,27 @@ public class Planet extends BaseEntity{
 		this.movieAppearances = movieAppearances;
 	}
 
-	public List<Climate> getClimates() {
-		return climates;
+	public List<String> getClimate() {
+		return climate;
 	}
 
-	public void setClimates(List<Climate> climates) {
-		this.climates = climates;
+	public void setClimate(List<String> climate) {
+		this.climate = climate;
 	}
 	
-	public void addClimate(int id, String name) {
-		Climate climate = new Climate();
-		climate.setId(id);
-		climate.setName(name);
-		
-		this.climates.add(climate);
+	public void addClimate(String oneClimate) {
+		this.climate.add(oneClimate);
 	}
 
-	public List<Terrain> getTerrain() {
-		return terrains;
+	public List<String> getTerrain() {
+		return terrain;
 	}
 
-	public void setTerrain(List<Terrain> terrains) {
-		this.terrains = terrains;
+	public void setTerrain(List<String> terrain) {
+		this.terrain = terrain;
 	}
 	
-	public void addTerrain(int id, String name) {
-		Terrain terrain = new Terrain();
-		
-		terrain.setId(id);
-		terrain.setName(name);
-		this.terrains.add(terrain);
+	public void addTerrain(String oneTerrain) {		
+		this.terrain.add(oneTerrain);
 	}
 }
