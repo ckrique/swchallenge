@@ -2,6 +2,9 @@ package br.com.swchallenge.api.resource;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +25,9 @@ import br.com.swchallenge.api.service.PlanetService;
 
 @RestController
 public class PlanetController {
-
+	
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@Autowired
 	private PlanetService planetService;
 
@@ -62,7 +67,8 @@ public class PlanetController {
 	}
 
 	@DeleteMapping("/swchallenge/removePlanet/{name}")
-	public String removePlanet(@PathVariable String name) {
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void removePlanet(@PathVariable String name) {
 		try {
 			planetService.removePlanet(name);			
 		} catch (PlanetNotFoudException pNFEx) {
@@ -70,7 +76,8 @@ public class PlanetController {
 		} catch (Exception ex) {
 			throw new InternalFailureException();
 		}
-		return "Planeta removido com sucesso.";
+		
+		logger.info("< removed planet name:{}", name);
 	}
 
 	@PostMapping("/swchallenge/addPlanet")
