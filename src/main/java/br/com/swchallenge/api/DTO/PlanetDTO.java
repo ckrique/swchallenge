@@ -19,8 +19,11 @@ public class PlanetDTO extends BaseDTO {
 
 	
 	public PlanetDTO() {
+		climate = "";
+		terrain = "";
 		climatesList = new ArrayList<String>();
-		terrainsList = new ArrayList<String>();		
+		terrainsList = new ArrayList<String>();	
+		filmsUrls = new ArrayList<String>();		
 	}
 	
 	
