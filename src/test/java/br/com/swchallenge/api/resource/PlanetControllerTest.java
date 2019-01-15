@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import br.com.swchallenge.api.AbstractControllerTest;
 import br.com.swchallenge.api.DTO.PlanetDTO;
+import br.com.swchallenge.api.exceptions.PlanetNotFoudException;
 import br.com.swchallenge.api.model.Planet;
 import br.com.swchallenge.api.service.PlanetService;
 
@@ -217,6 +218,69 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		}
 
 	}
+	
+	
+	@Test
+	public void testremovePlanet() throws Exception {
+
+		int status;
+		String content;
+		String inputJson;
+		String uriRemove = "/swchallenge/removePlanet/{name}";
+		String uriSave = "/swchallenge/addPlanet";
+
+		String planetName = "Kamino";
+		String climateOne = "temperate";
+		String climateTwo = "arid";
+		String terrainOne = "desert";
+
+		PlanetDTO planet = new PlanetDTO();
+		planet.setName(planetName);
+		planet.addClimateToList(climateOne);
+		planet.addClimateToList(climateTwo);
+		planet.addTerrainToList(terrainOne);
+
+		try {
+			inputJson = super.mapToJson(planet);
+
+			MvcResult result = mvc.perform(MockMvcRequestBuilders.post(uriSave).contentType(MediaType.APPLICATION_JSON)
+					.accept(MediaType.APPLICATION_JSON).content(inputJson)).andReturn();
+
+			content = result.getResponse().getContentAsString();
+
+			usedPlanetDTO = super.mapFromJson(content, PlanetDTO.class);
+
+			result = mvc.perform(
+					MockMvcRequestBuilders.delete(uriRemove, usedPlanetDTO.getName()).accept(MediaType.APPLICATION_JSON))
+					.andReturn();
+
+			content = result.getResponse().getContentAsString();
+			status = result.getResponse().getStatus();
+
+			Assert.assertEquals("failure - expected HTTP status 204", 204, status);
+	        Assert.assertTrue("failure - expected HTTP response body to be empty", content.trim().length() == 0);
+	        
+	        Planet deletedPlanet = null;
+	        
+	        try {
+				deletedPlanet = service.findPlanetsByName(usedPlanetDTO.getName());	        
+			}
+			catch(PlanetNotFoudException pNEx) {
+				Assert.assertNull("failure - expected greeting to be null", deletedPlanet);
+			}        
+
+			
+		} catch (Exception ex) {
+			service.removePlanet(planet.getName());
+			usedPlanet = null;
+			throw ex;
+		} 
+		
+		
+	}
+	
+	
+	
 
 	@Test
 	public void testSavePlanet() throws Exception {

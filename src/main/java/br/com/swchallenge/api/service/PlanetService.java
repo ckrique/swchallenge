@@ -29,6 +29,10 @@ public class PlanetService extends BaseService {
 
 	private static List<PlanetDTO> SWAPIPlanets;
 
+	public void delete(Planet planet) {
+		planetRepositoty.delete(planet);
+	}
+	
 	public List<Planet> findPlanets() throws ValidationException {
 		List<Planet> planets = new ArrayList<Planet>();
 
@@ -38,10 +42,7 @@ public class PlanetService extends BaseService {
 			throw new PlanetsNotFoudException();
 
 		return planets;
-	}
-
-
-	
+	}	
 
 	public Planet findPlanetsByName(String name) throws PlanetNotFoudException {
 		Planet planet = null;
@@ -72,10 +73,13 @@ public class PlanetService extends BaseService {
 		planet = findPlanetsByName(name);
 
 		if (planet != null)
-			planetRepositoty.delete(planet);
+			delete(planet);
 		else
 			throw new PlanetNotFoudException();
-
+	}
+	
+	public void save(Planet planet) {
+		planetRepositoty.save(planet);
 	}
 	
 	public PlanetDTO savePlanetByDTO(PlanetDTO planetDTO)
@@ -88,7 +92,7 @@ public class PlanetService extends BaseService {
 			planetDTO.setMovieAppearances(getMovieAppearances(planetDTO));			
 
 			Planet planet = extractEntityFromDTO(planetDTO);
-			planetRepositoty.save(planet);
+			save(planet);
 			planetDTO.setId(planet.getId());
 
 		} catch (SwChallengeException swCEx) {
@@ -98,7 +102,7 @@ public class PlanetService extends BaseService {
 		}
 		return planetDTO;
 	}
-	
+			
 	public Planet extractEntityFromDTO(PlanetDTO planetDTO) {// COLOCAR VALIDAÇÕES CONTRA NULL POINTER
 		Planet planet = new Planet();
 		
