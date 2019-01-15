@@ -1,6 +1,7 @@
 package br.com.swchallenge.api.DTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 public class BaseDTO {
 	private int id;
@@ -27,8 +28,16 @@ public class BaseDTO {
 	public String getName() {
 		return name;
 	}
-
+	
+	//Used to fill DTO from swchallenge requisition
+	@JsonSetter("name")
 	public void setName(String name) {
+		this.name = name;
+	}
+	
+	//Used to fill DTO from swapi requisition
+	@JsonSetter("nome")
+	public void setNome(String name) {
 		this.name = name;
 	}
 
