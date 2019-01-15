@@ -4,9 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
 import javax.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+
 import br.com.swchallenge.api.DTO.PlanetDTO;
 import br.com.swchallenge.api.client.SWAPIClient;
 import br.com.swchallenge.api.exceptions.AlreadyRecordedDataException;
@@ -27,7 +34,7 @@ public class PlanetService extends BaseService {
 	@Autowired
 	private SWAPIClient swApiClient;
 
-	private static List<PlanetDTO> SWAPIPlanets;
+	private List<PlanetDTO> SWAPIPlanets;
 
 	public void delete(Planet planet) {
 		planetRepositoty.delete(planet);
@@ -120,7 +127,27 @@ public class PlanetService extends BaseService {
 	}
 
 	private void callSWAPIToGetPlanets() throws Exception {
-		SWAPIPlanets = swApiClient.getSWAPIPlanets();
+				
+		CacheLoader<String, List<PlanetDTO>> loader;
+	    loader = new CacheLoader<String, List<PlanetDTO>>() {
+	    	@Override
+	        public List<PlanetDTO> load(String key) throws Exception {
+	        	HashMap<String, List<PlanetDTO>> map = new HashMap<String, List<PlanetDTO>>();
+	        	map.put(key, swApiClient.getSWAPIPlanets());
+	    		return map.get(key);
+	        }
+	    };
+	 
+	    LoadingCache<String, List<PlanetDTO>> cache;
+	    cache = CacheBuilder.newBuilder()
+	      .refreshAfterWrite(10,TimeUnit.HOURS)
+	      .build(loader);
+		
+	    SWAPIPlanets = cache.getUnchecked("1");
+	    
+		
+		
+		
 	}
 
 	private int getMovieAppearances(PlanetDTO planet) {
