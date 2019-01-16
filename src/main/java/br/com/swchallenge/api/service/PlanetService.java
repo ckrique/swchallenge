@@ -1,5 +1,7 @@
 package br.com.swchallenge.api.service;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,12 +36,13 @@ public class PlanetService extends BaseService {
 	@Autowired
 	private SWAPIClient swApiClient;
 
-	private List<PlanetDTO> SWAPIPlanets;
+	private static List<PlanetDTO> SWAPIPlanets = null;
+	private static LocalDateTime lastAccesDateTime = null;
 
 	public void delete(Planet planet) {
 		planetRepositoty.delete(planet);
 	}
-	
+
 	public List<Planet> findPlanets() throws ValidationException {
 		List<Planet> planets = new ArrayList<Planet>();
 
@@ -49,7 +52,7 @@ public class PlanetService extends BaseService {
 			throw new PlanetsNotFoudException();
 
 		return planets;
-	}	
+	}
 
 	public Planet findPlanetsByName(String name) throws PlanetNotFoudException {
 		Planet planet = null;
@@ -84,19 +87,19 @@ public class PlanetService extends BaseService {
 		else
 			throw new PlanetNotFoudException();
 	}
-	
+
 	public void save(Planet planet) {
 		planetRepositoty.save(planet);
 	}
-	
+
 	public PlanetDTO savePlanetByDTO(PlanetDTO planetDTO)
 			throws NotIsASWPlanetException, AlreadyRecordedDataException, BadRequestException {
 		try {
-			callSWAPIToGetPlanets();
+			callSWAPIToGetPlanetsUntilTarget(planetDTO.getName());
 
 			validatePlanet(planetDTO);
-			
-			planetDTO.setMovieAppearances(getMovieAppearances(planetDTO));			
+
+			planetDTO.setMovieAppearances(getMovieAppearances(planetDTO));
 
 			Planet planet = extractEntityFromDTO(planetDTO);
 			save(planet);
@@ -109,45 +112,35 @@ public class PlanetService extends BaseService {
 		}
 		return planetDTO;
 	}
-			
+
 	public Planet extractEntityFromDTO(PlanetDTO planetDTO) {// COLOCAR VALIDAÇÕES CONTRA NULL POINTER
 		Planet planet = new Planet();
-		
+
 		planet.setId(planetDTO.getId());
 		planet.setMovieAppearances(planetDTO.getMovieAppearances());
 		planet.setName(planetDTO.getName());
 
-		for (String oneClimate : planetDTO.getClimatesList())		
-			planet.addClimate(oneClimate);		
+		for (String oneClimate : planetDTO.getClimatesList())
+			planet.addClimate(oneClimate);
 
-		for (String oneTerrain : planetDTO.getTerrainsList())		
+		for (String oneTerrain : planetDTO.getTerrainsList())
 			planet.addTerrain(oneTerrain);
 
 		return planet;
 	}
 
-	private void callSWAPIToGetPlanets() throws Exception {
-				
-		CacheLoader<String, List<PlanetDTO>> loader;
-	    loader = new CacheLoader<String, List<PlanetDTO>>() {
-	    	@Override
-	        public List<PlanetDTO> load(String key) throws Exception {
-	        	HashMap<String, List<PlanetDTO>> map = new HashMap<String, List<PlanetDTO>>();
-	        	map.put(key, swApiClient.getSWAPIPlanets());
-	    		return map.get(key);
-	        }
-	    };
-	 
-	    LoadingCache<String, List<PlanetDTO>> cache;
-	    cache = CacheBuilder.newBuilder()
-	      .refreshAfterWrite(10,TimeUnit.HOURS)
-	      .build(loader);
+	private void callSWAPIToGetPlanetsUntilTarget(String panetNAmeTarget) throws Exception {
+
+		if (SWAPIPlanets == null && lastAccesDateTime == null ) {
+			SWAPIPlanets = swApiClient.getSWAPIPlanets(panetNAmeTarget);
+		}
+		else if (SWAPIPlanets != null && 
+				lastAccesDateTime != null &&
+				ChronoUnit.HOURS.between(LocalDateTime.now(), lastAccesDateTime) > 5){
+			SWAPIPlanets = swApiClient.getSWAPIPlanets(panetNAmeTarget);
+		}
 		
-	    SWAPIPlanets = cache.getUnchecked("1");
-	    
-		
-		
-		
+		lastAccesDateTime = LocalDateTime.now();
 	}
 
 	private int getMovieAppearances(PlanetDTO planet) {

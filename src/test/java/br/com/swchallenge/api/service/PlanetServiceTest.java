@@ -20,7 +20,6 @@ public class PlanetServiceTest extends AbstractTest {
 
 	@Before
 	public void setUp() {
-		// service.evictCache();
 	}
 
 	@After

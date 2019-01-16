@@ -1,6 +1,7 @@
 package br.com.swchallenge.api.client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
@@ -16,7 +17,7 @@ import br.com.swchallenge.api.DTO.PlanetsRequisitionListDTO;
 
 @Component
 public class SWAPIClient {
-	private static final String FIRST_PLANETS_PAGE_SWAPI_URL = "https://swapi.co/api/planets";
+	private static final String FIRST_PLANETS_PAGE_SWAPI_URL = "https://swapi.co/api/planets/?page=1";
 
 	/**
 	 * @return
@@ -30,10 +31,11 @@ public class SWAPIClient {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<PlanetDTO> getSWAPIPlanets() throws Exception {
-		
+	public List<PlanetDTO> getSWAPIPlanets(String planetNameTarget) throws Exception {
+
 		List<PlanetDTO> receivedPlanets = new ArrayList<PlanetDTO>();
 		String nextPlanetUrl = "";
+		boolean continueSearch = true;
 
 		CloseableHttpClient httpClient = HttpClients.custom().setSSLHostnameVerifier(new NoopHostnameVerifier())
 				.build();
@@ -42,7 +44,7 @@ public class SWAPIClient {
 		RestTemplate restTemplate = new RestTemplate(requestFactory);
 		ResponseEntity<PlanetsRequisitionListDTO> responseEntity;
 		nextPlanetUrl = FIRST_PLANETS_PAGE_SWAPI_URL;
-		
+
 		do {
 			responseEntity = restTemplate.getForEntity(nextPlanetUrl, PlanetsRequisitionListDTO.class);
 
@@ -53,13 +55,20 @@ public class SWAPIClient {
 				if (planetsRequisitionList.getCount() > receivedPlanets.size()) {
 					for (int i = 0; i < planetsRequisitionList.getResults().size(); i++) {
 						PlanetDTO receivedPlanet = planetsRequisitionList.getResults().get(i);
-						if (receivedPlanet.getName() != null && !receivedPlanet.getName().equals(""))
+						if (receivedPlanet.getName() != null && !receivedPlanet.getName().equals("")) {
 							receivedPlanets.add(planetsRequisitionList.getResults().get(i));
+							if (planetNameTarget != null && !planetNameTarget.equals("")
+									&& planetNameTarget.equals(receivedPlanet.getName())) {
+								continueSearch = false;
+								break;
+							}
+						}
+
 					}
 				}
 			} else
 				throw new Exception("Erro ao tentar consulta SWAPI."); // TODO MELHORAR MENSAGEM DA EXCEPTION
-		} while (nextPlanetUrl != null && !nextPlanetUrl.equals(""));
+		} while (nextPlanetUrl != null && !nextPlanetUrl.equals("") && continueSearch);
 
 		return receivedPlanets;
 	}

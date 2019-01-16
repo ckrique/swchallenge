@@ -34,8 +34,6 @@ public class PlanetControllerTest extends AbstractControllerTest {
 
 	@After
 	public void tearDown() {
-		// clean up after each test method
-		
 
 	}
 
@@ -218,8 +216,7 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		}
 
 	}
-	
-	
+
 	@Test
 	public void testremovePlanet() throws Exception {
 
@@ -250,37 +247,30 @@ public class PlanetControllerTest extends AbstractControllerTest {
 
 			usedPlanetDTO = super.mapFromJson(content, PlanetDTO.class);
 
-			result = mvc.perform(
-					MockMvcRequestBuilders.delete(uriRemove, usedPlanetDTO.getName()).accept(MediaType.APPLICATION_JSON))
-					.andReturn();
+			result = mvc.perform(MockMvcRequestBuilders.delete(uriRemove, usedPlanetDTO.getName())
+					.accept(MediaType.APPLICATION_JSON)).andReturn();
 
 			content = result.getResponse().getContentAsString();
 			status = result.getResponse().getStatus();
 
 			Assert.assertEquals("failure - expected HTTP status 204", 204, status);
-	        Assert.assertTrue("failure - expected HTTP response body to be empty", content.trim().length() == 0);
-	        
-	        Planet deletedPlanet = null;
-	        
-	        try {
-				deletedPlanet = service.findPlanetsByName(usedPlanetDTO.getName());	        
-			}
-			catch(PlanetNotFoudException pNEx) {
-				Assert.assertNull("failure - expected greeting to be null", deletedPlanet);
-			}        
+			Assert.assertTrue("failure - expected HTTP response body to be empty", content.trim().length() == 0);
 
-			
+			Planet deletedPlanet = null;
+
+			try {
+				deletedPlanet = service.findPlanetsByName(usedPlanetDTO.getName());
+			} catch (PlanetNotFoudException pNEx) {
+				Assert.assertNull("failure - expected greeting to be null", deletedPlanet);
+			}
+
 		} catch (Exception ex) {
 			service.removePlanet(planet.getName());
 			usedPlanet = null;
 			throw ex;
-		} 
-		
-		
+		}
+
 	}
-	
-	
-	
 
 	@Test
 	public void testSavePlanet() throws Exception {
