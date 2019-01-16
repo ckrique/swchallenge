@@ -43,9 +43,7 @@ public class BaseEntity {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		BaseEntity other = (BaseEntity) obj;
-		if (id != other.id)
-			return false;
+		BaseEntity other = (BaseEntity) obj;		
 		if (name == null) {
 			if (other.name != null)
 				return false;

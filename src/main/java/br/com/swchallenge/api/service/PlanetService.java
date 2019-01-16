@@ -6,15 +6,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import javax.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
 import br.com.swchallenge.api.DTO.PlanetDTO;
 import br.com.swchallenge.api.client.SWAPIClient;
@@ -95,7 +91,7 @@ public class PlanetService extends BaseService {
 	public PlanetDTO savePlanetByDTO(PlanetDTO planetDTO)
 			throws NotIsASWPlanetException, AlreadyRecordedDataException, BadRequestException {
 		try {
-			callSWAPIToGetPlanetsUntilTarget(planetDTO.getName());
+			callSWAPIToGetPlanets();
 
 			validatePlanet(planetDTO);
 
@@ -129,15 +125,15 @@ public class PlanetService extends BaseService {
 		return planet;
 	}
 
-	private void callSWAPIToGetPlanetsUntilTarget(String panetNAmeTarget) throws Exception {
+	private void callSWAPIToGetPlanets() throws Exception {
 
 		if (SWAPIPlanets == null && lastAccesDateTime == null ) {
-			SWAPIPlanets = swApiClient.getSWAPIPlanets(panetNAmeTarget);
+			SWAPIPlanets = swApiClient.getSWAPIPlanets();
 		}
 		else if (SWAPIPlanets != null && 
 				lastAccesDateTime != null &&
 				ChronoUnit.HOURS.between(LocalDateTime.now(), lastAccesDateTime) > 5){
-			SWAPIPlanets = swApiClient.getSWAPIPlanets(panetNAmeTarget);
+			SWAPIPlanets = swApiClient.getSWAPIPlanets();
 		}
 		
 		lastAccesDateTime = LocalDateTime.now();

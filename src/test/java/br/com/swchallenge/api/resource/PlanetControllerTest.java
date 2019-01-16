@@ -15,17 +15,21 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import br.com.swchallenge.api.AbstractControllerTest;
 import br.com.swchallenge.api.DTO.PlanetDTO;
+import br.com.swchallenge.api.client.SWAPIClient;
 import br.com.swchallenge.api.exceptions.PlanetNotFoudException;
+import br.com.swchallenge.api.exceptions.PlanetsNotFoudException;
 import br.com.swchallenge.api.model.Planet;
 import br.com.swchallenge.api.service.PlanetService;
 
 public class PlanetControllerTest extends AbstractControllerTest {
 	@Autowired
-	private PlanetService service;
+	private PlanetService planetService;
 
 	private List<PlanetDTO> usedPlanetDTOs = null;
 	private PlanetDTO usedPlanetDTO = null;
 	private Planet usedPlanet = null;
+	
+	private static List<PlanetDTO> swapiPlanets = null;
 
 	@Before
 	public void setUp() {
@@ -46,7 +50,10 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		String uriFind = "/swchallenge/findByPlanetById/{id}";
 		String uriSave = "/swchallenge/addPlanet";
 
-		String planetName = "Ryloth";
+
+		List<String> planetNames = getPlanetNamesForTest();
+		
+		String planetName = planetNames.get(0);
 		String climateOne = "temperate";
 		String climateTwo = "arid";
 		String terrainOne = "desert";
@@ -85,7 +92,7 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		} catch (Exception ex) {
 			throw ex;
 		} finally {
-			service.removePlanet(planet.getName());
+			planetService.removePlanet(planet.getName());
 			usedPlanet = null;
 		}
 	}
@@ -99,7 +106,10 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		String uriFind = "/swchallenge/findByName/{name}";
 		String uriSave = "/swchallenge/addPlanet";
 
-		String planetName = "Ryloth";
+
+		List<String> planetNames = getPlanetNamesForTest();
+
+		String planetName = planetNames.get(0);
 		String climateOne = "temperate";
 		String climateTwo = "arid";
 		String terrainOne = "desert";
@@ -138,7 +148,7 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		} catch (Exception ex) {
 			throw ex;
 		} finally {
-			service.removePlanet(planet.getName());
+			planetService.removePlanet(planet.getName());
 			usedPlanet = null;
 		}
 	}
@@ -152,8 +162,10 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		String uriFind = "/swchallenge/PlanetList";
 		String uriSave = "/swchallenge/addPlanet";
 
-		String planetOneName = "Ryloth";
-		String planetTwoName = "Sullust";
+		List<String> planetNames = getPlanetNamesForTest();
+		
+		String planetOneName = planetNames.get(0);
+		String planetTwoName = planetNames.get(1);
 		String climateOne = "temperate";
 		String climateTwo = "arid";
 		String terrainOne = "desert";
@@ -186,16 +198,22 @@ public class PlanetControllerTest extends AbstractControllerTest {
 			MvcResult result = mvc.perform(MockMvcRequestBuilders.post(uriSave).contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON).content(inputJson)).andReturn();
 
-			// Secound Add
-			inputJson = super.mapToJson(usedPlanetDTOs.get(1));
-			result = mvc.perform(MockMvcRequestBuilders.post(uriSave).contentType(MediaType.APPLICATION_JSON)
-					.accept(MediaType.APPLICATION_JSON).content(inputJson)).andReturn();
-
-			// find All
-			result = mvc.perform(MockMvcRequestBuilders.get(uriFind).accept(MediaType.APPLICATION_JSON)).andReturn();
-
 			content = result.getResponse().getContentAsString();
 			status = result.getResponse().getStatus();
+			
+			// Secound Add
+			inputJson = super.mapToJson(usedPlanetDTOs.get(1));
+			MvcResult result2 = mvc.perform(MockMvcRequestBuilders.post(uriSave).contentType(MediaType.APPLICATION_JSON)
+					.accept(MediaType.APPLICATION_JSON).content(inputJson)).andReturn();
+
+			content = result2.getResponse().getContentAsString();
+			status = result2.getResponse().getStatus();
+			
+			// find All
+			MvcResult result3 = mvc.perform(MockMvcRequestBuilders.get(uriFind).accept(MediaType.APPLICATION_JSON)).andReturn();
+
+			content = result3.getResponse().getContentAsString();
+			status = result3.getResponse().getStatus();
 
 			receivedPlanets = Arrays.asList(super.mapFromJson(content, Planet[].class));
 
@@ -208,7 +226,7 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		} finally {
 			if (usedPlanetDTOs != null) {
 				for (PlanetDTO onePlanet : usedPlanetDTOs) {
-					service.removePlanet(onePlanet.getName());
+					planetService.removePlanet(onePlanet.getName());
 				}
 			}
 
@@ -226,8 +244,10 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		String uriRemove = "/swchallenge/removePlanet/{name}";
 		String uriSave = "/swchallenge/addPlanet";
 
-		String planetName = "Kamino";
-		String climateOne = "temperate";
+		List<String> planetNames = getPlanetNamesForTest();
+		
+		String planetName = planetNames.get(0);
+		String climateOne = planetNames.get(1);
 		String climateTwo = "arid";
 		String terrainOne = "desert";
 
@@ -259,13 +279,13 @@ public class PlanetControllerTest extends AbstractControllerTest {
 			Planet deletedPlanet = null;
 
 			try {
-				deletedPlanet = service.findPlanetsByName(usedPlanetDTO.getName());
+				deletedPlanet = planetService.findPlanetsByName(usedPlanetDTO.getName());
 			} catch (PlanetNotFoudException pNEx) {
 				Assert.assertNull("failure - expected greeting to be null", deletedPlanet);
 			}
 
 		} catch (Exception ex) {
-			service.removePlanet(planet.getName());
+			planetService.removePlanet(planet.getName());
 			usedPlanet = null;
 			throw ex;
 		}
@@ -275,7 +295,10 @@ public class PlanetControllerTest extends AbstractControllerTest {
 	@Test
 	public void testSavePlanet() throws Exception {
 
-		String planetName = "Coruscant";
+		List<String> planetNames = getPlanetNamesForTest();
+		
+		String planetName = planetNames.get(0);
+				
 		String climateOne = "temperate";
 		String climateTwo = "arid";
 		String terrainOne = "desert";
@@ -315,8 +338,38 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		} catch (Exception ex) {
 			throw ex;
 		} finally {
-			service.removePlanet(planet.getName());
+			planetService.removePlanet(planet.getName());
 			usedPlanet = null;
+		}
+	}
+	
+	public List<String> getPlanetNamesForTest() {
+		try {
+			List<String> planetNames = new ArrayList<String>();
+			List<Planet> dBRecordedPlanets = null;
+			
+			try {
+				 dBRecordedPlanets = planetService.findPlanets();
+			}catch(PlanetsNotFoudException pNFEx) {
+				//no one planet in bd				
+			}
+			
+			SWAPIClient swapiClient = new SWAPIClient();
+			
+			if(swapiPlanets == null)
+				swapiPlanets = swapiClient.getSWAPIPlanets();
+			
+			for(PlanetDTO planetDTO : swapiPlanets) {
+				if(dBRecordedPlanets == null || dBRecordedPlanets.size() == 0)
+					planetNames.add(planetDTO.getName());
+				else if(!dBRecordedPlanets.contains(planetService.extractEntityFromDTO(planetDTO)))
+					planetNames.add(planetDTO.getName());
+			}
+					
+			return planetNames;
+			
+		} catch (Exception e) {
+			return null;			
 		}
 	}
 
