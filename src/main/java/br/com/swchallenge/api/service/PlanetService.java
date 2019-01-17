@@ -1,5 +1,8 @@
 package br.com.swchallenge.api.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -11,14 +14,11 @@ import javax.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-
 import br.com.swchallenge.api.DTO.PlanetDTO;
 import br.com.swchallenge.api.client.SWAPIClient;
 import br.com.swchallenge.api.exceptions.AlreadyRecordedDataException;
 import br.com.swchallenge.api.exceptions.BadRequestException;
 import br.com.swchallenge.api.exceptions.NotIsASWPlanetException;
-import br.com.swchallenge.api.exceptions.PlanetNotFoudException;
-import br.com.swchallenge.api.exceptions.PlanetsNotFoudException;
 import br.com.swchallenge.api.exceptions.SwChallengeException;
 import br.com.swchallenge.api.model.Planet;
 import br.com.swchallenge.api.repository.PlanetRepositoty;
@@ -31,6 +31,8 @@ public class PlanetService extends BaseService {
 
 	@Autowired
 	private SWAPIClient swApiClient;
+	
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private static List<PlanetDTO> SWAPIPlanets = null;
 	private static LocalDateTime lastAccesDateTime = null;
@@ -39,49 +41,36 @@ public class PlanetService extends BaseService {
 		planetRepositoty.delete(planet);
 	}
 
-	public List<Planet> findPlanets() throws ValidationException {
-		List<Planet> planets = new ArrayList<Planet>();
-
-		planets = planetRepositoty.findAll();
-
-		if (planets.size() <= 0)
-			throw new PlanetsNotFoudException();
-
-		return planets;
+	public List<Planet> findPlanets() {		
+		return planetRepositoty.findAll();
 	}
 
-	public Planet findPlanetsByName(String name) throws PlanetNotFoudException {
-		Planet planet = null;
-
-		planet = planetRepositoty.findByName(name);
-
-		if (planet == null)
-			throw new PlanetNotFoudException();
-
-		return planet;
+	public Planet findPlanetsByName(String name) {		
+		return planetRepositoty.findByName(name);
 	}
 
-	public Planet findPlanetsById(int id) throws PlanetsNotFoudException {
+	public Planet findPlanetsById(int id) {
 		Optional<Planet> encapsulatedPlanet = null;
 
 		encapsulatedPlanet = planetRepositoty.findById(id);
-
-		if (!encapsulatedPlanet.isPresent())
-			throw new PlanetNotFoudException();
-
-		return encapsulatedPlanet.get();
+		if(encapsulatedPlanet.isPresent())
+			return encapsulatedPlanet.get();
+		else
+			return new Planet();
 	}
 
-	public void removePlanet(String name) throws PlanetNotFoudException {
+	public void removePlanet(String name) {
 
-		Planet planet = null;
+		Planet planet = new Planet();
 
 		planet = findPlanetsByName(name);
 
-		if (planet != null)
+		if (planet != null && planet.getName() != null && !planet.getName().equals("")) {
 			delete(planet);
+			logger.info("< removed planet name:{} and id:{}", planet.getName(), planet.getId());
+		}
 		else
-			throw new PlanetNotFoudException();
+			logger.info("- Any Planet was found to be removed");
 	}
 
 	public void save(Planet planet) {
@@ -127,15 +116,13 @@ public class PlanetService extends BaseService {
 
 	private void callSWAPIToGetPlanets() throws Exception {
 
-		if (SWAPIPlanets == null && lastAccesDateTime == null ) {
+		if (SWAPIPlanets == null && lastAccesDateTime == null) {
+			SWAPIPlanets = swApiClient.getSWAPIPlanets();
+		} else if (SWAPIPlanets != null && lastAccesDateTime != null
+				&& ChronoUnit.HOURS.between(LocalDateTime.now(), lastAccesDateTime) > 5) {
 			SWAPIPlanets = swApiClient.getSWAPIPlanets();
 		}
-		else if (SWAPIPlanets != null && 
-				lastAccesDateTime != null &&
-				ChronoUnit.HOURS.between(LocalDateTime.now(), lastAccesDateTime) > 5){
-			SWAPIPlanets = swApiClient.getSWAPIPlanets();
-		}
-		
+
 		lastAccesDateTime = LocalDateTime.now();
 	}
 

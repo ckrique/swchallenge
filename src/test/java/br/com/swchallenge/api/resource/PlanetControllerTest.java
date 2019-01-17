@@ -16,8 +16,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import br.com.swchallenge.api.AbstractControllerTest;
 import br.com.swchallenge.api.DTO.PlanetDTO;
 import br.com.swchallenge.api.client.SWAPIClient;
-import br.com.swchallenge.api.exceptions.PlanetNotFoudException;
-import br.com.swchallenge.api.exceptions.PlanetsNotFoudException;
 import br.com.swchallenge.api.model.Planet;
 import br.com.swchallenge.api.service.PlanetService;
 
@@ -28,7 +26,7 @@ public class PlanetControllerTest extends AbstractControllerTest {
 	private List<PlanetDTO> usedPlanetDTOs = null;
 	private PlanetDTO usedPlanetDTO = null;
 	private Planet usedPlanet = null;
-	
+
 	private static List<PlanetDTO> swapiPlanets = null;
 
 	@Before
@@ -50,9 +48,8 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		String uriFind = "/swchallenge/findByPlanetById/{id}";
 		String uriSave = "/swchallenge/addPlanet";
 
-
 		List<String> planetNames = getPlanetNamesForTest();
-		
+
 		String planetName = planetNames.get(0);
 		String climateOne = "temperate";
 		String climateTwo = "arid";
@@ -105,7 +102,6 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		String inputJson;
 		String uriFind = "/swchallenge/findByName/{name}";
 		String uriSave = "/swchallenge/addPlanet";
-
 
 		List<String> planetNames = getPlanetNamesForTest();
 
@@ -163,7 +159,7 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		String uriSave = "/swchallenge/addPlanet";
 
 		List<String> planetNames = getPlanetNamesForTest();
-		
+
 		String planetOneName = planetNames.get(0);
 		String planetTwoName = planetNames.get(1);
 		String climateOne = "temperate";
@@ -200,7 +196,7 @@ public class PlanetControllerTest extends AbstractControllerTest {
 
 			content = result.getResponse().getContentAsString();
 			status = result.getResponse().getStatus();
-			
+
 			// Secound Add
 			inputJson = super.mapToJson(usedPlanetDTOs.get(1));
 			MvcResult result2 = mvc.perform(MockMvcRequestBuilders.post(uriSave).contentType(MediaType.APPLICATION_JSON)
@@ -208,9 +204,10 @@ public class PlanetControllerTest extends AbstractControllerTest {
 
 			content = result2.getResponse().getContentAsString();
 			status = result2.getResponse().getStatus();
-			
+
 			// find All
-			MvcResult result3 = mvc.perform(MockMvcRequestBuilders.get(uriFind).accept(MediaType.APPLICATION_JSON)).andReturn();
+			MvcResult result3 = mvc.perform(MockMvcRequestBuilders.get(uriFind).accept(MediaType.APPLICATION_JSON))
+					.andReturn();
 
 			content = result3.getResponse().getContentAsString();
 			status = result3.getResponse().getStatus();
@@ -245,7 +242,7 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		String uriSave = "/swchallenge/addPlanet";
 
 		List<String> planetNames = getPlanetNamesForTest();
-		
+
 		String planetName = planetNames.get(0);
 		String climateOne = planetNames.get(1);
 		String climateTwo = "arid";
@@ -276,13 +273,10 @@ public class PlanetControllerTest extends AbstractControllerTest {
 			Assert.assertEquals("failure - expected HTTP status 204", 204, status);
 			Assert.assertTrue("failure - expected HTTP response body to be empty", content.trim().length() == 0);
 
-			Planet deletedPlanet = null;
+			Planet deletedPlanet = planetService.findPlanetsByName(usedPlanetDTO.getName());
 
-			try {
-				deletedPlanet = planetService.findPlanetsByName(usedPlanetDTO.getName());
-			} catch (PlanetNotFoudException pNEx) {
-				Assert.assertNull("failure - expected greeting to be null", deletedPlanet);
-			}
+			if (deletedPlanet != null && !deletedPlanet.getName().equals(""))
+				Assert.assertNull("failure - expected Planet to be null", deletedPlanet);
 
 		} catch (Exception ex) {
 			planetService.removePlanet(planet.getName());
@@ -296,9 +290,9 @@ public class PlanetControllerTest extends AbstractControllerTest {
 	public void testSavePlanet() throws Exception {
 
 		List<String> planetNames = getPlanetNamesForTest();
-		
+
 		String planetName = planetNames.get(0);
-				
+
 		String climateOne = "temperate";
 		String climateTwo = "arid";
 		String terrainOne = "desert";
@@ -342,34 +336,30 @@ public class PlanetControllerTest extends AbstractControllerTest {
 			usedPlanet = null;
 		}
 	}
-	
+
 	public List<String> getPlanetNamesForTest() {
 		try {
 			List<String> planetNames = new ArrayList<String>();
 			List<Planet> dBRecordedPlanets = null;
-			
-			try {
-				 dBRecordedPlanets = planetService.findPlanets();
-			}catch(PlanetsNotFoudException pNFEx) {
-				//no one planet in bd				
-			}
-			
+
+			dBRecordedPlanets = planetService.findPlanets();
+
 			SWAPIClient swapiClient = new SWAPIClient();
-			
-			if(swapiPlanets == null)
+
+			if (swapiPlanets == null)
 				swapiPlanets = swapiClient.getSWAPIPlanets();
-			
-			for(PlanetDTO planetDTO : swapiPlanets) {
-				if(dBRecordedPlanets == null || dBRecordedPlanets.size() == 0)
+
+			for (PlanetDTO planetDTO : swapiPlanets) {
+				if (dBRecordedPlanets == null || dBRecordedPlanets.size() == 0)
 					planetNames.add(planetDTO.getName());
-				else if(!dBRecordedPlanets.contains(planetService.extractEntityFromDTO(planetDTO)))
+				else if (!dBRecordedPlanets.contains(planetService.extractEntityFromDTO(planetDTO)))
 					planetNames.add(planetDTO.getName());
 			}
-					
+
 			return planetNames;
-			
+
 		} catch (Exception e) {
-			return null;			
+			return null;
 		}
 	}
 
