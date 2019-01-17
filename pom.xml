@@ -13,7 +13,7 @@
 	<artifactId>swchallenge</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>swchallenge</name>
-	<description>Evaluation project to B2W, CRUD to Star Wars Planets and itegration with SWAPI </description>
+	<description>Job selection project, CRUD to Star Wars Planets and itegration with SWAPI </description>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -58,23 +58,11 @@
 			<artifactId>hsqldb</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-
-		<!-- Dependencies for Guava Cache Management Support -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>18.0</version>
-		</dependency>
-		
-		
-
-
+		</dependency>		
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -83,5 +71,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
