@@ -1,7 +1,6 @@
 package br.com.swchallenge.api.model;
 
 import org.springframework.data.annotation.Id;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BaseEntity {
@@ -31,7 +30,7 @@ public class BaseEntity {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + id;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.toUpperCase().hashCode());
 		return result;
 	}
 
@@ -47,10 +46,8 @@ public class BaseEntity {
 		if (name == null) {
 			if (other.name != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!name.equalsIgnoreCase(other.name))
 			return false;
 		return true;
-	}
-
-	
+	}	
 }

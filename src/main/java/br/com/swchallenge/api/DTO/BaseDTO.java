@@ -1,11 +1,10 @@
 package br.com.swchallenge.api.DTO;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 public class BaseDTO {
-	private int id;
-	
+	private int id;	
 	private String name;
 
 	public BaseDTO() {
@@ -45,7 +44,7 @@ public class BaseDTO {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.toUpperCase().hashCode());
 		return result;
 	}
 
@@ -61,9 +60,8 @@ public class BaseDTO {
 		if (name == null) {
 			if (other.name != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!name.equalsIgnoreCase(other.name))
 			return false;
 		return true;
 	}
-
 }

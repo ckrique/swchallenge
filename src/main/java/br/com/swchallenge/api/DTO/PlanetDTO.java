@@ -6,7 +6,6 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PlanetDTO extends BaseDTO {
-
 	private int movieAppearances;
 	private String climate;
 	private String terrain;
@@ -16,7 +15,6 @@ public class PlanetDTO extends BaseDTO {
 	private List<String> filmsUrls;
 	@JsonProperty("terreno")
 	private List<String> terrainsList;
-
 	
 	public PlanetDTO() {
 		climate = "";
@@ -25,8 +23,7 @@ public class PlanetDTO extends BaseDTO {
 		terrainsList = new ArrayList<String>();	
 		filmsUrls = new ArrayList<String>();		
 	}
-	
-	
+		
 	public String getClimate() {
 		return climate;
 	}
@@ -117,5 +114,4 @@ public class PlanetDTO extends BaseDTO {
 	public void setTerrainsList(List<String> terrains) {
 		this.terrainsList = terrains;
 	}
-
 }

@@ -10,11 +10,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-//@SpringApplicationConfiguration(classes = Application.class)
 @SpringBootTest(classes = SwchallengeApplication.class)
 @WebAppConfiguration
 public abstract class AbstractTest {
-
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
-
 }

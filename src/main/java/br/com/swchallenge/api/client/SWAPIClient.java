@@ -1,7 +1,6 @@
 package br.com.swchallenge.api.client;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.conn.ssl.NoopHostnameVerifier;

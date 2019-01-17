@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +24,8 @@ import br.com.swchallenge.api.repository.PlanetRepositoty;
 
 @Component
 public class PlanetService extends BaseService {
+	private final int HOURS_TO_CHECK_WS_AGAIN = 10;	
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private PlanetRepositoty planetRepositoty;
@@ -32,8 +33,6 @@ public class PlanetService extends BaseService {
 	@Autowired
 	private SWAPIClient swApiClient;
 	
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
-
 	private static List<PlanetDTO> SWAPIPlanets = null;
 	private static LocalDateTime lastAccesDateTime = null;
 
@@ -46,7 +45,7 @@ public class PlanetService extends BaseService {
 	}
 
 	public Planet findPlanetsByName(String name) {		
-		return planetRepositoty.findByName(name);
+		return planetRepositoty.findByName(name.toUpperCase());
 	}
 
 	public Planet findPlanetsById(int id) {
@@ -86,6 +85,8 @@ public class PlanetService extends BaseService {
 
 			planetDTO.setMovieAppearances(getMovieAppearances(planetDTO));
 
+			planetDTO.setName(planetDTO.getName().toUpperCase());
+			
 			Planet planet = extractEntityFromDTO(planetDTO);
 			save(planet);
 			planetDTO.setId(planet.getId());
@@ -119,7 +120,7 @@ public class PlanetService extends BaseService {
 		if (SWAPIPlanets == null && lastAccesDateTime == null) {
 			SWAPIPlanets = swApiClient.getSWAPIPlanets();
 		} else if (SWAPIPlanets != null && lastAccesDateTime != null
-				&& ChronoUnit.HOURS.between(LocalDateTime.now(), lastAccesDateTime) > 5) {
+				&& ChronoUnit.HOURS.between(LocalDateTime.now(), lastAccesDateTime) > HOURS_TO_CHECK_WS_AGAIN) {
 			SWAPIPlanets = swApiClient.getSWAPIPlanets();
 		}
 
@@ -131,9 +132,9 @@ public class PlanetService extends BaseService {
 
 		if (SWAPIPlanets != null)
 			for (PlanetDTO SWAPIPlanet : SWAPIPlanets)
-				planetMap.put(SWAPIPlanet.getName(), SWAPIPlanet);
+				planetMap.put(SWAPIPlanet.getName().toUpperCase(), SWAPIPlanet);
 
-		PlanetDTO pdto = planetMap.get(planet.getName());
+		PlanetDTO pdto = planetMap.get(planet.getName().toUpperCase());
 		int count = pdto.getMovieAppearances();
 		return count;
 	}

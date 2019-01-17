@@ -22,13 +22,12 @@ import br.com.swchallenge.api.service.PlanetService;
 public class PlanetControllerTest extends AbstractControllerTest {
 	@Autowired
 	private PlanetService planetService;
-
-	private List<PlanetDTO> usedPlanetDTOs = null;
 	private PlanetDTO usedPlanetDTO = null;
 	private Planet usedPlanet = null;
-
+	private List<PlanetDTO> usedPlanetDTOs = null;
 	private static List<PlanetDTO> swapiPlanets = null;
-
+	
+	
 	@Before
 	public void setUp() {
 		super.setUp();
@@ -36,24 +35,23 @@ public class PlanetControllerTest extends AbstractControllerTest {
 
 	@After
 	public void tearDown() {
-
 	}
 
 	@Test
 	public void testfindByPlanetById() throws Exception {
-
+		
+		
 		int status;
 		String content;
 		String inputJson;
 		String uriFind = "/swchallenge/findByPlanetById/{id}";
-		String uriSave = "/swchallenge/addPlanet";
-
-		List<String> planetNames = getPlanetNamesForTest();
-
+		String uriSave = "/swchallenge/addPlanet";	
+		List<String> planetNames = getPlanetNamesToTest();
+		
 		String planetName = planetNames.get(0);
 		String climateOne = "temperate";
 		String climateTwo = "arid";
-		String terrainOne = "desert";
+		String terrainOne = "grasslands";
 
 		PlanetDTO planet = new PlanetDTO();
 		planet.setName(planetName);
@@ -63,18 +61,19 @@ public class PlanetControllerTest extends AbstractControllerTest {
 
 		try {
 			inputJson = super.mapToJson(planet);
-
-			MvcResult result = mvc.perform(MockMvcRequestBuilders.post(uriSave).contentType(MediaType.APPLICATION_JSON)
-					.accept(MediaType.APPLICATION_JSON).content(inputJson)).andReturn();
+			
+			MvcResult result = mvc.perform(MockMvcRequestBuilders
+								  .post(uriSave).contentType(MediaType.APPLICATION_JSON)
+							  	  .accept(MediaType.APPLICATION_JSON).content(inputJson)).andReturn();
 
 			content = result.getResponse().getContentAsString();
-
 			usedPlanetDTO = super.mapFromJson(content, PlanetDTO.class);
 
 			result = mvc.perform(
-					MockMvcRequestBuilders.get(uriFind, usedPlanetDTO.getId()).accept(MediaType.APPLICATION_JSON))
-					.andReturn();
-
+					MockMvcRequestBuilders.get(uriFind, usedPlanetDTO.getId())
+									      .accept(MediaType.APPLICATION_JSON))
+									      .andReturn();
+			
 			content = result.getResponse().getContentAsString();
 			status = result.getResponse().getStatus();
 
@@ -82,10 +81,11 @@ public class PlanetControllerTest extends AbstractControllerTest {
 
 			Assert.assertEquals("failure - expected HTTP status 200", 200, status);
 			Assert.assertTrue("failure - expected HTTP response body to have a value", content.trim().length() > 0);
-			Assert.assertEquals("failure - expected Planet name text match", planetName, usedPlanet.getName());
+			Assert.assertEquals("failure - expected Planet name text match", planetName.toUpperCase(), usedPlanet.getName().toUpperCase());
 			Assert.assertTrue("failure - expected text attribute match", usedPlanet.getClimate().contains(climateOne));
 			Assert.assertTrue("failure - expected text attribute match", usedPlanet.getClimate().contains(climateTwo));
 			Assert.assertTrue("failure - expected text attribute match", usedPlanet.getTerrain().contains(terrainOne));
+			
 		} catch (Exception ex) {
 			throw ex;
 		} finally {
@@ -103,11 +103,11 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		String uriFind = "/swchallenge/findByName/{name}";
 		String uriSave = "/swchallenge/addPlanet";
 
-		List<String> planetNames = getPlanetNamesForTest();
+		List<String> planetNames = getPlanetNamesToTest();
 
 		String planetName = planetNames.get(0);
-		String climateOne = "temperate";
-		String climateTwo = "arid";
+		String climateOne = "frozen";
+		String climateTwo = "murky";
 		String terrainOne = "desert";
 
 		PlanetDTO planet = new PlanetDTO();
@@ -119,16 +119,17 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		try {
 			inputJson = super.mapToJson(planet);
 
-			MvcResult result = mvc.perform(MockMvcRequestBuilders.post(uriSave).contentType(MediaType.APPLICATION_JSON)
-					.accept(MediaType.APPLICATION_JSON).content(inputJson)).andReturn();
+			MvcResult result = mvc.perform(MockMvcRequestBuilders.post(uriSave)
+								  .contentType(MediaType.APPLICATION_JSON)
+								  .accept(MediaType.APPLICATION_JSON).content(inputJson)).andReturn();
 
 			content = result.getResponse().getContentAsString();
 
 			usedPlanetDTO = super.mapFromJson(content, PlanetDTO.class);
 
-			result = mvc.perform(
-					MockMvcRequestBuilders.get(uriFind, usedPlanetDTO.getName()).accept(MediaType.APPLICATION_JSON))
-					.andReturn();
+			result = mvc.perform(MockMvcRequestBuilders.get(uriFind, usedPlanetDTO.getName())
+													   .accept(MediaType.APPLICATION_JSON))
+													   .andReturn();
 
 			content = result.getResponse().getContentAsString();
 			status = result.getResponse().getStatus();
@@ -137,7 +138,7 @@ public class PlanetControllerTest extends AbstractControllerTest {
 
 			Assert.assertEquals("failure - expected HTTP status 200", 200, status);
 			Assert.assertTrue("failure - expected HTTP response body to have a value", content.trim().length() > 0);
-			Assert.assertEquals("failure - expected Planet name text match", planetName, usedPlanet.getName());
+			Assert.assertEquals("failure - expected Planet name text match", planetName.toUpperCase(), usedPlanet.getName().toUpperCase());
 			Assert.assertTrue("failure - expected text attribute match", usedPlanet.getClimate().contains(climateOne));
 			Assert.assertTrue("failure - expected text attribute match", usedPlanet.getClimate().contains(climateTwo));
 			Assert.assertTrue("failure - expected text attribute match", usedPlanet.getTerrain().contains(terrainOne));
@@ -158,13 +159,13 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		String uriFind = "/swchallenge/PlanetList";
 		String uriSave = "/swchallenge/addPlanet";
 
-		List<String> planetNames = getPlanetNamesForTest();
+		List<String> planetNames = getPlanetNamesToTest();
 
 		String planetOneName = planetNames.get(0);
 		String planetTwoName = planetNames.get(1);
-		String climateOne = "temperate";
+		String climateOne = "hot";
 		String climateTwo = "arid";
-		String terrainOne = "desert";
+		String terrainOne = "mountains";
 		String terrainTwo = "Rocks";
 
 		List<Planet> receivedPlanets = new ArrayList<Planet>();
@@ -175,7 +176,6 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		planet.setName(planetOneName);
 		planet.addClimateToList(climateOne);
 		planet.addTerrainToList(terrainOne);
-
 		usedPlanetDTOs.add(planet);
 
 		// Secound Planet
@@ -184,7 +184,6 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		planet.setName(planetTwoName);
 		planet.addClimateToList(climateTwo);
 		planet.addTerrainToList(terrainTwo);
-
 		usedPlanetDTOs.add(planet);
 
 		try {
@@ -226,10 +225,8 @@ public class PlanetControllerTest extends AbstractControllerTest {
 					planetService.removePlanet(onePlanet.getName());
 				}
 			}
-
 			usedPlanetDTOs = null;
 		}
-
 	}
 
 	@Test
@@ -241,12 +238,12 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		String uriRemove = "/swchallenge/removePlanet/{name}";
 		String uriSave = "/swchallenge/addPlanet";
 
-		List<String> planetNames = getPlanetNamesForTest();
+		List<String> planetNames = getPlanetNamesToTest();
 
 		String planetName = planetNames.get(0);
 		String climateOne = planetNames.get(1);
 		String climateTwo = "arid";
-		String terrainOne = "desert";
+		String terrainOne = "jungle";
 
 		PlanetDTO planet = new PlanetDTO();
 		planet.setName(planetName);
@@ -289,13 +286,13 @@ public class PlanetControllerTest extends AbstractControllerTest {
 	@Test
 	public void testSavePlanet() throws Exception {
 
-		List<String> planetNames = getPlanetNamesForTest();
+		List<String> planetNames = getPlanetNamesToTest();
 
 		String planetName = planetNames.get(0);
 
 		String climateOne = "temperate";
 		String climateTwo = "arid";
-		String terrainOne = "desert";
+		String terrainOne = "rainforests";
 
 		String uri = "/swchallenge/addPlanet";
 
@@ -322,7 +319,7 @@ public class PlanetControllerTest extends AbstractControllerTest {
 
 			Assert.assertNotNull("failure - expected Planet not null", usedPlanetDTO);
 			Assert.assertNotNull("failure - expected Planet.id not null", usedPlanetDTO.getId());
-			Assert.assertEquals("failure - expected Planet.name match", planetName, usedPlanetDTO.getName());
+			Assert.assertEquals("failure - expected Planet.name match", planetName.toUpperCase(), usedPlanetDTO.getName().toUpperCase());
 			Assert.assertTrue("failure - expected Planet text attribute match",
 					usedPlanetDTO.getClimatesList().contains(climateOne));
 			Assert.assertTrue("failure - expected Planet text attribute match",
@@ -337,7 +334,7 @@ public class PlanetControllerTest extends AbstractControllerTest {
 		}
 	}
 
-	public List<String> getPlanetNamesForTest() {
+	public List<String> getPlanetNamesToTest() {
 		try {
 			List<String> planetNames = new ArrayList<String>();
 			List<Planet> dBRecordedPlanets = null;

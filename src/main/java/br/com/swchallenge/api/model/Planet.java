@@ -15,11 +15,9 @@ import lombok.Data;
 @Document(collection="Planet")
 @Data
 @AllArgsConstructor
-public class Planet extends BaseEntity{
-	
+public class Planet extends BaseEntity{	
 	@Transient
-    public static final String SEQUENCE_NAME = "planets_sequence";
-	
+    public static final String SEQUENCE_NAME = "planets_sequence";	
 	@JsonProperty("numeroAparicoesEmFilmes")
 	private int movieAppearances;	
 	@JsonProperty("clima")
