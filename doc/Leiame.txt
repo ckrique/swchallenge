@@ -1,4 +1,4 @@
-O swchalenge é uma API com capacidade de manter um cadastro de Planetas da série Star War.
+﻿O swchalenge é uma API com capacidade de manter um cadastro de Planetas da série Star War.
 Através da API não é permitido cadastro de outros Planetas que não sejam da série.
 Além do nome dos planetas, é possível manter no cadastro o clima, o terreno e o número de vezes que cada planeta apareceu
 nos filmes Star War.
@@ -15,6 +15,8 @@ Na pasta "Doc" do projeto, encontra-se uma planilha nomeada como URIs_e_BD.xlsx.
 e URI's dos métodos oferecidos pelo swchallenge, bem como um rápido manual de restauração do banco de dados.
 
 Observações: 
+-Para importar a aplicação para o eclipse é necessário colocar a pasta do projeto no workspace e importar o projeto como
+"Projeto existente no workspace";
 -Ao executar, com o JUnit, todos os testes disponíveis o banco de dados já será automaticamente criado,
 sem haver a necessidade de restauração;
 -A aplicação já está configurada para acessar o banco de dados em localhost na porta 27017. No caso de se desejar usar 
