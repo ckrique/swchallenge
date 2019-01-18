@@ -1,0 +1,12 @@
+{
+	"nome": "Corellia",  
+	"terreno": [
+		"urban",
+		"hills",
+		"forests",
+		"plains"
+	],
+	"clima":[
+		"temperate"
+	]
+}

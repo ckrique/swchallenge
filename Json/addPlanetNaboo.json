@@ -1,0 +1,11 @@
+{
+	"nome": "Naboo",  
+	"terreno": [
+		"desert",
+		"mountains"
+	],
+	"clima":[
+		"temperate",
+		"frozen"
+	]
+}

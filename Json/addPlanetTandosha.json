@@ -1,0 +1,12 @@
+{
+	"nome": "Trandosha",  
+	"terreno": [
+		"mountains",
+		"seas",
+		"grasslands",
+		"deserts"
+	],
+	"clima":[
+		"arid"
+	]
+}

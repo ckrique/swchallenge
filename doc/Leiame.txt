@@ -1,0 +1,26 @@
+O swchalenge é uma API com capacidade de manter um cadastro de Planetas da série Star War.
+Através da API não é permitido cadastro de outros Planetas que não sejam da série.
+Além do nome dos planetas, é possível manter no cadastro o clima, o terreno e o número de vezes que cada planeta apareceu
+nos filmes Star War.
+
+Uma breve descrição técnica da API é a seguinte:
+-Foi escrita na linguagem JAVA;
+-Faz uso principalmente do Framework Spring Boot associado ao Maven;
+-Usa o MongoDB como Banco de Dados.
+
+Além dos métodos que geram a API, o projeto também possui uma camadada de testes, onde se encontram testes unitários
+que testam todos os recursos oferecidos pela API.
+
+Na pasta "Doc" do projeto, encontra-se uma planilha nomeada como URIs_e_BD.xlsx. Essa planilha possui as descrições
+e URI's dos métodos oferecidos pelo swchallenge, bem como um rápido manual de restauração do banco de dados.
+
+Observações: 
+-Ao executar, com o JUnit, todos os testes disponíveis o banco de dados já será automaticamente criado,
+sem haver a necessidade de restauração;
+-A aplicação já está configurada para acessar o banco de dados em localhost na porta 27017. No caso de se desejar usar 
+o banco de dados em outro local é só alterar as propriedades da aplicação na pasta "src\main\resources"(é ideal que 
+se altere dentro do Eclipse);
+-Para executar a aplicação a partir do eclipse, basta "rodar como Java Application" a classe SwchallengeApplication
+que é a classe principal do projeto;
+-O backup do projeto se encontra na pasta dump;
+-Na pasta Json, encontram-se três arquivos de exemplo para cadastramento de Planetas.
